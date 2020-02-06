@@ -96,7 +96,7 @@ void mergePyramidList(std::vector<cv::Mat> resizeImages, std::vector<dimP> dimen
         tmpPosition.x0 = 0;
         tmpPosition.x1 = dimention[i].ws;
         tmpPosition.y0 = tmpPosition.y1 + 1 ;
-        tmpPosition.y1 = tempPosition.y0 + dimention[i].hs;
+        tmpPosition.y1 = tmpPosition.y0 + dimention[i].hs;
         position.push_back(tmpPosition);
     }
 
@@ -134,19 +134,20 @@ int fileList(FILE* listfile,string& path) {
 }
 
 int writeToBatchFile(string& picture, FILE* file) {
-    cv::Mat picture = cv::imread(picture.c_str());
+
+    cv::Mat image = cv::imread(picture.c_str());
 
     //将图片等比缩放为480*360
-    double factor_w = 480/double(picture.cols);
-    double factor_h = 360/double(picture.rows);
+    double factor_w = 480/double(image.cols);
+    double factor_h = 360/double(image.rows);
     double factor = min(factor_w, factor_h);
-    int resize_w = std::ceil(picture.cols * factor);
+    int resize_w = std::ceil(image.cols * factor);
     resize_w = min(640, resize_w);
-    int resize_h = std::ceil(picture.rows * factor);
+    int resize_h = std::ceil(image.rows * factor);
     resize_h = min(360, resize_h);
 
     cv::Mat resizeImage;
-    cv::resize(picture, resizeImage, cv::Size(resize_w, resize_h), 0, 0, cv::INTER_NEAREST);
+    cv::resize(image, resizeImage, cv::Size(resize_w, resize_h), 0, 0, cv::INTER_NEAREST);
 
     cv::Mat temp(360, 640, CV_8UC3, cv::Scalar::all(0));
     resizeImage.copyTo(temp(cv::Rect(cv::Point(0,0),cv::Point(resize_w,resize_h))));
